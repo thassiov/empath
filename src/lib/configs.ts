@@ -5,7 +5,12 @@ const numberGenerator = {
 
 const reposiory = {
   randomNumber: {
-    tableName: process.env['RANDOMNUMBER_TABLE_NAME'] ?? 'random-number-table',
+    retrieveMaxQuantity: 5,
+    dynamodb: {
+      tableName:
+        process.env['RANDOMNUMBER_TABLE_NAME_DYNAMODB'] ??
+        'random-number-table',
+    },
   },
 };
 

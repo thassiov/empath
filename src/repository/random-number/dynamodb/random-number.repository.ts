@@ -1,21 +1,25 @@
-import { QueryCommand, QueryCommandInput } from '@aws-sdk/client-dynamodb';
+import {
+  QueryCommand,
+  QueryCommandInput,
+  QueryCommandOutput,
+} from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
   PutCommandInput,
 } from '@aws-sdk/lib-dynamodb';
 import { randomUUID } from 'crypto';
-import { configs } from '../lib/configs';
-import { OperationError } from '../lib/errors/operation.error';
-import { operations } from '../lib/operation-list';
-import { IRandomNumber, IRandomNumberRecord } from '../types';
-import { IRandomNumberRepository } from './types';
+import { configs } from '../../../lib/configs';
+import { OperationError } from '../../../lib/errors/operation.error';
+import { operations } from '../../../lib/operation-list';
+import { IRandomNumber, IRandomNumberRecord } from '../../../types';
+import { IRandomNumberRepository } from '../../types';
 
 class RandomNumberRepository implements IRandomNumberRepository {
   private tableName: string;
   private retrieveMaxQuantity: number;
   constructor(private readonly dynamo: DynamoDBDocumentClient) {
-    this.tableName = configs.reposiory.randomNumber.tableName;
+    this.tableName = configs.reposiory.randomNumber.dynamodb.tableName;
     this.retrieveMaxQuantity =
       configs.reposiory.randomNumber.retrieveMaxQuantity;
   }
@@ -30,7 +34,7 @@ class RandomNumberRepository implements IRandomNumberRepository {
         },
       };
 
-      await this.dynamo.send(new PutCommand(putParams));
+      await this.sendPut(putParams);
     } catch (error) {
       const operationError = new OperationError({
         cause: error as Error,
@@ -53,13 +57,13 @@ class RandomNumberRepository implements IRandomNumberRepository {
         Limit: this.retrieveMaxQuantity,
       };
 
-      const { Items } = await this.dynamo.send(new QueryCommand(queryParams));
+      const result = await this.sendQuery(queryParams);
 
-      if (!Items) {
+      if (!result.Items) {
         return [];
       }
 
-      return Items as unknown as IRandomNumber[];
+      return result.Items as unknown as IRandomNumber[];
     } catch (error) {
       const operationError = new OperationError({
         cause: error as Error,
@@ -70,6 +74,16 @@ class RandomNumberRepository implements IRandomNumberRepository {
 
       throw operationError;
     }
+  }
+
+  private async sendQuery(
+    queryParams: QueryCommandInput
+  ): Promise<QueryCommandOutput> {
+    return this.dynamo.send(new QueryCommand(queryParams));
+  }
+
+  private async sendPut(putParams: PutCommandInput): Promise<void> {
+    await this.dynamo.send(new PutCommand(putParams));
   }
 }
 
