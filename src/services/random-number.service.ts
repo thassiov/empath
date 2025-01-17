@@ -1,5 +1,6 @@
 import { configs } from '../lib/configs';
 import { OperationError } from '../lib/errors/operation.error';
+import { operations } from '../lib/operation-list';
 import { IRandomNumberRepository } from '../repository/types';
 import { IRandomNumber, IRandomNumberRecord } from '../types';
 import { IRandomNumberService } from './types';
@@ -27,7 +28,7 @@ class RandomNumberService implements IRandomNumberService {
       const operationError = new OperationError({
         cause: error as Error,
         details: {
-          operation: 'create-random-number-record',
+          operation: operations.createRandomNumberRecord,
         },
       });
 

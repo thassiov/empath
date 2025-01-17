@@ -7,13 +7,17 @@ import {
 import { randomUUID } from 'crypto';
 import { configs } from '../lib/configs';
 import { OperationError } from '../lib/errors/operation.error';
+import { operations } from '../lib/operation-list';
 import { IRandomNumber, IRandomNumberRecord } from '../types';
 import { IRandomNumberRepository } from './types';
 
 class RandomNumberRepository implements IRandomNumberRepository {
   private tableName: string;
+  private retrieveMaxQuantity: number;
   constructor(private readonly dynamo: DynamoDBDocumentClient) {
     this.tableName = configs.reposiory.randomNumber.tableName;
+    this.retrieveMaxQuantity =
+      configs.reposiory.randomNumber.retrieveMaxQuantity;
   }
 
   async store(randomNumberRecord: IRandomNumberRecord): Promise<void> {
@@ -31,7 +35,7 @@ class RandomNumberRepository implements IRandomNumberRepository {
       const operationError = new OperationError({
         cause: error as Error,
         details: {
-          operation: 'create-random-number-record',
+          operation: operations.createRandomNumberRecord,
           input: randomNumberRecord,
         },
       });
@@ -46,7 +50,7 @@ class RandomNumberRepository implements IRandomNumberRepository {
         TableName: this.tableName,
         ProjectionExpression: 'randomNumber',
         ScanIndexForward: false,
-        Limit: 5,
+        Limit: this.retrieveMaxQuantity,
       };
 
       const { Items } = await this.dynamo.send(new QueryCommand(queryParams));
@@ -60,7 +64,7 @@ class RandomNumberRepository implements IRandomNumberRepository {
       const operationError = new OperationError({
         cause: error as Error,
         details: {
-          operation: 'retrieve-random-number-records',
+          operation: operations.retrieveRandomNumberRecord,
         },
       });
 
