@@ -1,0 +1,18 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": ".",
+    "outDir": "./dist",
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "eslint.config.mjs",
+    "esbuild.config.mjs",
+    "jest.config.js",
+    "coverage/"
+  ]
+}

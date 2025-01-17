@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "**/*/*.spec.ts",
+    "eslint.config.mjs",
+    "esbuild.config.mjs",
+    "jest.config.js"
+  ]
+}
