@@ -6,4 +6,8 @@ type IRandomNumberRecord = IRandomNumber & {
   timestamp: string;
 };
 
-export type { IRandomNumber, IRandomNumberRecord };
+type IQueryResponseRandomNumber = {
+  randomNumber: { N: number };
+};
+
+export type { IQueryResponseRandomNumber, IRandomNumber, IRandomNumberRecord };
