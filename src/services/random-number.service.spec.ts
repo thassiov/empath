@@ -1,5 +1,5 @@
 import { OperationError } from '../lib/errors/operation.error';
-import { IRandomNumberRepository } from '../repository/types';
+import { IRandomNumberRepository } from '../repositories/types';
 import { RandomNumberService } from './random-number.service';
 
 describe('[service] random number', () => {

@@ -15,7 +15,8 @@ const dynamodbClient = new DynamoDBClient();
 const randomNumberRepository = new RandomNumberRepository(
   (
     Resource[
-      configs.repository.randomNumber.dynamodb.tableName as keyof Resource
+      configs.repository.randomNumber.dynamodb
+        .tableName as keyof typeof Resource
     ] as {
       name: string;
     }

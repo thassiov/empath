@@ -1,7 +1,7 @@
 import { configs } from '../lib/configs';
 import { OperationError } from '../lib/errors/operation.error';
 import { operations } from '../lib/operation-list';
-import { IRandomNumberRepository } from '../repository/types';
+import { IRandomNumberRepository } from '../repositories/types';
 import { IRandomNumber, IRandomNumberRecord } from '../types';
 import { IRandomNumberService } from './types';
 
