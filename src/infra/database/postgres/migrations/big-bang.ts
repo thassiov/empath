@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { configs } from '../../../lib/configs';
+import { configs } from '../../../../lib/configs';
 
 async function up(knex: Knex) {
   return knex.schema.createTable(

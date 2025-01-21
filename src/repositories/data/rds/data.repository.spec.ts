@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import { Pool } from 'pg';
 import { OperationError } from '../../../lib/errors/operation.error';
 import { operations } from '../../../lib/operation-list';
 import { DataRepository } from './data.repository';
@@ -25,7 +25,7 @@ describe('[repository] data', () => {
       .spyOn(DataRepository.prototype as any, 'sendInsert')
       .mockResolvedValueOnce(mockQueryReturnValue);
 
-    const instance = new DataRepository(mockDbClient as unknown as Knex);
+    const instance = new DataRepository(mockDbClient as unknown as Pool);
 
     const result = await instance.store(mockData);
 
@@ -40,7 +40,7 @@ describe('[repository] data', () => {
       .spyOn(DataRepository.prototype as any, 'sendInsert')
       .mockRejectedValueOnce(mockError);
 
-    const instance = new DataRepository(mockDbClient as unknown as Knex);
+    const instance = new DataRepository(mockDbClient as unknown as Pool);
 
     let thrown;
     try {

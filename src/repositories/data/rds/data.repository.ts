@@ -1,11 +1,11 @@
-import { Knex } from 'knex';
+import { Pool } from 'pg';
 import { OperationError } from '../../../lib/errors/operation.error';
 import { operations } from '../../../lib/operation-list';
 import { IUnstructuredDataRecord } from '../../../types';
 import { IDataRepository } from '../../types';
 
 class DataRepository implements IDataRepository {
-  constructor(private readonly dbClient: Knex) {}
+  constructor(private readonly dbClient: Pool) {}
 
   async store(data: IUnstructuredDataRecord): Promise<string> {
     try {
@@ -32,11 +32,17 @@ class DataRepository implements IDataRepository {
   private async sendInsert(
     data: IUnstructuredDataRecord
   ): Promise<{ id: string } | undefined> {
-    const [result] = (await this.dbClient('unstructured_data')
-      .insert({ data })
-      .returning('id')) as { id: string }[];
+    const queryText =
+      'INSERT INTO unstructured_data(data) VALUES($1) RETURNING id';
+    const queryData = [data];
 
-    return result;
+    const { rows } = await this.dbClient.query(queryText, queryData);
+
+    if (!rows.length) {
+      return;
+    }
+
+    return rows[0] as { id: string };
   }
 }
 

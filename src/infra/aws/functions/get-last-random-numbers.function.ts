@@ -1,10 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { Resource } = require('sst');
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyResult } from 'aws-lambda';
 import { StatusCodes } from 'http-status-codes';
-// @ts-expect-error linter is talking about sst not being 'importable'
-import { Resource } from 'sst';
 import { configs } from '../../../lib/configs';
-import { RandomNumberRepository } from '../../../repository/random-number/dynamodb/random-number.repository';
+import { RandomNumberRepository } from '../../../repositories/random-number/dynamodb/random-number.repository';
 import { RandomNumberService } from '../../../services/random-number.service';
 import { getLambdaFunctionLogger } from '../lib/utils';
 
@@ -24,11 +24,7 @@ const randomNumberRepository = new RandomNumberRepository(
 );
 const randomNumberService = new RandomNumberService(randomNumberRepository);
 
-async function handler(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
-  logger.appendKeys({
-    resource_path: event.requestContext.resourcePath,
-  });
-
+async function handler(): Promise<APIGatewayProxyResult> {
   try {
     const numbers = await randomNumberService.getLastRandomNumbers();
     logger.info('Random numbers retrieved', { numbers });

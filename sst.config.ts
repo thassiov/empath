@@ -6,8 +6,6 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 import { configs } from './src/lib/configs';
-// import { getRdsConnectionClient } from './src/repository/data/lib/connection-pool';
-// import { down, up } from './src/repository/data/migrations/big-bang';
 
 export default $config({
   app(input: sst) {
@@ -21,7 +19,7 @@ export default $config({
   run() {
     const vpc = new sst.aws.Vpc(configs.aws.vpc.name);
 
-    const rds = new sst.aws.Postgres(configs.aws.rds.name, {
+    const rds = new sst.aws.Postgres(configs.repository.data.databaseName, {
       name: configs.repository.data.databaseName,
       vpc,
       dev: {
@@ -51,8 +49,7 @@ export default $config({
 
     const api = new sst.aws.ApiGatewayV2(configs.aws.gateway.name);
     api.route('GET /random', {
-      handler:
-        './src/infra/aws/functions/create-random-number-record.function.handler',
+      handler: configs.aws.lambda.functions.createRandomNumber.pathFromRoot,
       memory: configs.aws.lambda.opts.memory,
       description: configs.aws.lambda.functions.createRandomNumber.description,
       name: configs.aws.lambda.functions.createRandomNumber.name,
@@ -60,8 +57,7 @@ export default $config({
     });
 
     api.route('GET /random/logs', {
-      handler:
-        './src/infra/aws/functions/get-last-random-numbers.function.handler',
+      handler: configs.aws.lambda.functions.getRandomNumbers.pathFromRoot,
       memory: configs.aws.lambda.opts.memory,
       description: configs.aws.lambda.functions.getRandomNumbers.description,
       name: configs.aws.lambda.functions.getRandomNumbers.name,
@@ -69,18 +65,12 @@ export default $config({
     });
 
     api.route('POST /data', {
-      handler:
-        './src/infra/aws/functions/store-unstructured-data.function.handler',
+      handler: configs.aws.lambda.functions.storeUnstructuredData.pathFromRoot,
       memory: configs.aws.lambda.opts.memory,
       description:
         configs.aws.lambda.functions.storeUnstructuredData.description,
       name: configs.aws.lambda.functions.storeUnstructuredData.name,
       link: [vpc, rds],
-      nodejs: {
-        esbuild: {
-          external: ['./node_modules/knex'],
-        },
-      },
     });
   },
 });

@@ -1,9 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { StatusCodes } from 'http-status-codes';
 import { configs } from '../../../lib/configs';
-import { getRdsConnectionClient } from '../../../repository/data/lib/connection-pool';
-import { DataRepository } from '../../../repository/data/rds/data.repository';
+import { DataRepository } from '../../../repositories/data/rds/data.repository';
 import { DataService } from '../../../services/data.service';
+import { getDbConnectionClient } from '../../database/postgres/lib/connection-client';
 import { getLambdaFunctionLogger } from '../lib/utils';
 import { isObjectPayloadValid } from '../lib/valitators';
 
@@ -11,15 +11,11 @@ const logger = getLambdaFunctionLogger(
   configs.aws.lambda.functions.storeUnstructuredData.name
 );
 
-const rdsClient = getRdsConnectionClient();
-const dataRepository = new DataRepository(rdsClient);
+const dbClient = getDbConnectionClient();
+const dataRepository = new DataRepository(dbClient);
 const dataService = new DataService(dataRepository);
 
 async function handler(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
-  logger.appendKeys({
-    resource_path: event.requestContext.resourcePath,
-  });
-
   if (!event.body || !isObjectPayloadValid(event.body)) {
     return {
       statusCode: StatusCodes.BAD_REQUEST,

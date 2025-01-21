@@ -1,17 +1,23 @@
 {
   "name": "backend-devops-challenge",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "## Objective Build a **Node.js-based** Serverless Stack (SST) application that utilizes AWS to create a REST API with multiple endpoints, including functionality to log data in DynamoDB. Deployment to AWS is optional but strongly encouraged for candidates with access to AWS accounts.",
-  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "npm": ">=10.0.0",
+    "node": ">=20.0.0"
+  },
+  "author": {
+    "name": "Thassio Victor",
+    "email": "tvmcarvalho@gmail.com"
+  },
   "scripts": {
     "test": "jest",
-    "wait-on-pg": "npx --yes wait-on socket:${PWD}/.pg/pg-socket-dir/.s.PGSQL.5432",
-    "migrate:up": " NODE_OPTIONS=\"-r ts-node/register --no-warnings\" npx --yes knex --knexfile ./src/repository/data/lib/knexfile.ts migrate:latest",
+    "wait-on-pg": "npx --yes wait-on socket:${PWD}/.pg/socket/.s.PGSQL.5432",
+    "migrate:up": " NODE_OPTIONS=\"-r ts-node/register --no-warnings\" npx --yes knex --knexfile ./src/infra/database/postgres/lib/knexfile.ts migrate:latest",
     "wait-on-pg-and-run-migration": "npm run wait-on-pg && npm run migrate:up"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@tsconfig/strictest": "^2.0.5",

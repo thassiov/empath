@@ -1,4 +1,4 @@
-import { configs } from '../../../lib/configs';
+import { configs } from '../../../../lib/configs';
 
 export default {
   client: 'pg',
