@@ -131,3 +131,6 @@ dist
 
 # sst
 .sst
+
+# pg socket dir
+.pg

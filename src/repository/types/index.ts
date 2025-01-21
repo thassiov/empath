@@ -1,8 +1,16 @@
-import { IRandomNumber, IRandomNumberRecord } from '../../types';
+import {
+  IRandomNumber,
+  IRandomNumberRecord,
+  IUnstructuredDataRecord,
+} from '../../types';
 
 type IRandomNumberRepository = {
   store: (randomNumberRecord: IRandomNumberRecord) => Promise<void>;
   retrieve: () => Promise<IRandomNumber[]>;
 };
 
-export type { IRandomNumberRepository };
+type IDataRepository = {
+  store: (data: IUnstructuredDataRecord) => Promise<string>;
+};
+
+export type { IDataRepository, IRandomNumberRepository };

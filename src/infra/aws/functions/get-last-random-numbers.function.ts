@@ -8,7 +8,9 @@ import { RandomNumberRepository } from '../../../repository/random-number/dynamo
 import { RandomNumberService } from '../../../services/random-number.service';
 import { getLambdaFunctionLogger } from '../lib/utils';
 
-const logger = getLambdaFunctionLogger('get-last-random-numbers');
+const logger = getLambdaFunctionLogger(
+  configs.aws.lambda.functions.getRandomNumbers.name
+);
 const dynamodbClient = new DynamoDBClient();
 const randomNumberRepository = new RandomNumberRepository(
   (

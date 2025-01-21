@@ -6,6 +6,8 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 import { configs } from './src/lib/configs';
+// import { getRdsConnectionClient } from './src/repository/data/lib/connection-pool';
+// import { down, up } from './src/repository/data/migrations/big-bang';
 
 export default $config({
   app(input: sst) {
@@ -17,6 +19,23 @@ export default $config({
     };
   },
   run() {
+    const vpc = new sst.aws.Vpc(configs.aws.vpc.name);
+
+    const rds = new sst.aws.Postgres(configs.aws.rds.name, {
+      name: configs.repository.data.databaseName,
+      vpc,
+      dev: {
+        ...configs.devDatabase,
+      },
+    });
+
+    new sst.x.DevCommand('wait-on-pg-and-run-migration', {
+      dev: {
+        autostart: true,
+        command: 'npm run wait-on-pg-and-run-migration',
+      },
+    });
+
     const dynamodb = new sst.aws.Dynamo(
       configs.repository.randomNumber.dynamodb.tableName,
       {
@@ -30,23 +49,38 @@ export default $config({
       }
     );
 
-    const api = new sst.aws.ApiGatewayV2('random-number-api');
+    const api = new sst.aws.ApiGatewayV2(configs.aws.gateway.name);
     api.route('GET /random', {
       handler:
         './src/infra/aws/functions/create-random-number-record.function.handler',
-      memory: '300 MB',
-      description: 'Handler function for generating new random numbers',
-      name: `create-random-number-record-function`,
+      memory: configs.aws.lambda.opts.memory,
+      description: configs.aws.lambda.functions.createRandomNumber.description,
+      name: configs.aws.lambda.functions.createRandomNumber.name,
       link: [dynamodb],
     });
 
     api.route('GET /random/logs', {
       handler:
         './src/infra/aws/functions/get-last-random-numbers.function.handler',
-      memory: '300 MB',
-      description: 'Handler function retrieving last generated random numbers',
-      name: `get-last-random-numbers-function`,
+      memory: configs.aws.lambda.opts.memory,
+      description: configs.aws.lambda.functions.getRandomNumbers.description,
+      name: configs.aws.lambda.functions.getRandomNumbers.name,
       link: [dynamodb],
+    });
+
+    api.route('POST /data', {
+      handler:
+        './src/infra/aws/functions/store-unstructured-data.function.handler',
+      memory: configs.aws.lambda.opts.memory,
+      description:
+        configs.aws.lambda.functions.storeUnstructuredData.description,
+      name: configs.aws.lambda.functions.storeUnstructuredData.name,
+      link: [vpc, rds],
+      nodejs: {
+        esbuild: {
+          external: ['./node_modules/knex'],
+        },
+      },
     });
   },
 });

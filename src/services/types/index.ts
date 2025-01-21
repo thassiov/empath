@@ -1,8 +1,12 @@
-import { IRandomNumber } from '../../types';
+import { IRandomNumber, IUnstructuredDataRecord } from '../../types';
 
 type IRandomNumberService = {
   createRandomNumberRecord: () => Promise<IRandomNumber>;
   getLastRandomNumbers: () => Promise<IRandomNumber[]>;
 };
 
-export type { IRandomNumberService };
+type IDataService = {
+  storeUnstructuredData: (data: IUnstructuredDataRecord) => Promise<string>;
+};
+
+export type { IDataService, IRandomNumberService };

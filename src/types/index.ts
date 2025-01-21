@@ -10,4 +10,11 @@ type IQueryResponseRandomNumber = {
   randomNumber: { N: number };
 };
 
-export type { IQueryResponseRandomNumber, IRandomNumber, IRandomNumberRecord };
+type IUnstructuredDataRecord = string;
+
+export type {
+  IQueryResponseRandomNumber,
+  IRandomNumber,
+  IRandomNumberRecord,
+  IUnstructuredDataRecord,
+};
