@@ -40,15 +40,21 @@ const aws = {
       createRandomNumber: {
         name: 'create-random-number-record-function',
         description: 'Handler function for generating new random numbers',
+        pathFromRoot:
+          './src/infra/aws/functions/create-random-number-record.function.handler',
       },
       getRandomNumbers: {
         name: 'get-last-random-numbers-function',
         description:
           'Handler function retrieving last generated random numbers',
+        pathFromRoot:
+          './src/infra/aws/functions/get-last-random-numbers.function.handler',
       },
       storeUnstructuredData: {
         name: 'store-unstructured-data',
         description: 'Handler function that stored json in a RDS database',
+        pathFromRoot:
+          './src/infra/aws/functions/store-unstructured-data.function.handler',
       },
     },
   },

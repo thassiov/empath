@@ -1,9 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { Resource } = require('sst');
 import knex, { Knex } from 'knex';
 // @ts-expect-error alsdkfjalskdjf
 import KnexPostgres from 'knex/lib/dialects/postgres';
 import { configs } from '../../../lib/configs';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { Resource } = require('sst');
 
 function getRdsConnectionClient(): Knex {
   const resource = Resource[
@@ -31,9 +31,7 @@ function getRdsConnectionClient(): Knex {
       extension: 'ts',
     },
   };
-  console.log('olha');
   const client = knex(clientConfig);
-  console.log('deveria funcionar');
   return client;
 }
 
